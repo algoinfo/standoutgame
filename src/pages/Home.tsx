@@ -1,22 +1,30 @@
 import { Link } from 'react-router-dom'
-import { codes } from '../data/codes'
-import { rarityCounts } from '../data/stands'
+import { rateRows, poolRemoved, storyPoolBlocks, storageNotes } from '../data/arrows'
+import { codes, redeemSteps } from '../data/codes'
+import { priorityNpcs } from '../data/npcs'
+import { rarityBlurb, rarityOrder, stands, type Rarity } from '../data/stands'
 import { updates } from '../data/updates'
 
 const active = codes.filter((c) => c.status === 'active')
 const expiredCount = codes.filter((c) => c.status === 'expired').length
-const standTotal = rarityCounts.reduce((sum, row) => sum + row.count, 0)
+const standTotal = stands.length
+
+const standsByRarity = rarityOrder.map((rarity) => ({
+  rarity,
+  blurb: rarityBlurb[rarity],
+  entries: stands.filter((s) => s.rarity === rarity),
+}))
 
 const hubs = [
   {
     to: '/stands',
     title: 'Stand database',
-    blurb: `${standTotal}+ documented Stands with rarity and kit counts`,
+    blurb: `${standTotal} documented kits with rarity, Part, and ability counts`,
   },
   {
     to: '/stands',
-    title: 'Tier list',
-    blurb: 'Rarity tiers and which arrows can return them',
+    title: 'Rarity ladder',
+    blurb: 'Seven tiers and which arrows can return each one',
   },
   {
     to: '/first-hour',
@@ -47,6 +55,30 @@ const hubs = [
     to: '/updates',
     title: 'Updates',
     blurb: 'Launch-week patches, codes, and balance notes',
+  },
+]
+
+const startPath = [
+  {
+    step: '01',
+    title: 'Tutorial → first arrow',
+    body: 'Clear Hey Ya’s shore tutorial for a Mysterious Arrow, open it from M → Inventory → USE, summon with E, then learn your kit before spending more arrows.',
+    to: '/first-hour',
+    link: 'First-hour walkthrough →',
+  },
+  {
+    step: '02',
+    title: 'Story → Phone → bounties',
+    body: 'Follow Usagi into Iko Iko, take the Phone from Meryl, push the hospital beat, then farm Petyr’s 45-minute bounties for Mysterious Arrows and Coins.',
+    to: '/guide',
+    link: 'Quests & bounties →',
+  },
+  {
+    step: '03',
+    title: 'Hamon, storage, stronger arrows',
+    body: 'Unlock Hamon via Billy → Lisa Lisa, park extras at D’Arby before you reroll, then craft Lucky (3×) or Bizarre (9×) when you are ready to chase higher tiers.',
+    to: '/builds',
+    link: 'Progression notes →',
   },
 ]
 
@@ -107,13 +139,66 @@ const guideCards = [
   },
 ]
 
-const featured = [
-  { name: 'Star Platinum', meta: 'Pinnacle · Part 3' },
-  { name: 'The World', meta: 'Pinnacle · Part 3' },
-  { name: 'King Crimson', meta: 'Pinnacle · Part 5' },
+const systems = [
+  {
+    title: 'Arrow economy',
+    body: 'Mysterious Arrows awaken and reroll. Lucky (3 Mysterious) skips Rare. Bizarre (9 Mysterious) skips Rare + Epic and carries the best published Pinnacle rate (4.4%). Part 3 / Part 5 focus arrows chase specific kits.',
+    to: '/arrows',
+  },
+  {
+    title: 'Bizarre Adventures',
+    body: 'Donatello (Museum park) opens Train, Highway Star, and 77 Rings raids. Clear stages for tokens, Chip shops, and boss drops that feed mid-game progression.',
+    to: '/raids',
+  },
+  {
+    title: 'Sub-abilities',
+    body: 'Hamon (Lisa Lisa) and Vampire (Stone Mask) unlock when you empty a Stand slot with Emerald Roka. Hermit Purple still needs Jonathan Hamon + Billy’s request.',
+    to: '/builds',
+  },
+  {
+    title: 'Gang wars & map',
+    body: 'Gang create costs 25,000 Coins. Bases grow Rokakaka faster. Weather locks some NPC routes — Blackmore and Old Lady only appear under their conditions.',
+    to: '/npcs',
+  },
 ]
 
-const homeUpdates = updates.slice(0, 3)
+const homeFaq = [
+  {
+    q: 'Is there a best Stand?',
+    a: 'The game FAQ says no definite best Stand. Rarity only gates which arrow can return a kit — it is not a published damage ranking.',
+  },
+  {
+    q: 'How do I redeem codes?',
+    a: 'Finish the tutorial, get the Phone from Meryl, press Z → Gifts (Codes), paste the string, Redeem → Claim. Launch-night codes often need a new server.',
+  },
+  {
+    q: 'Can I reroll without losing everything?',
+    a: 'Park the current Stand at D’Arby storage first. Using a Chip while another Stand is equipped overwrites the equipped kit for good.',
+  },
+  {
+    q: 'Why can’t I roll Super Fly / Rolling Stones early?',
+    a: 'Before story clear, the pool blocks several “bad progression” kits. Settings can re-enable some with a hard-PvE warning.',
+  },
+]
+
+const featured: { name: string; rarity: Rarity; meta: string }[] = [
+  { name: 'Star Platinum', rarity: 'Pinnacle', meta: 'Part 3 · 5 base · 4 EX' },
+  { name: 'The World', rarity: 'Pinnacle', meta: 'Part 3 · 4 base · 4 EX' },
+  { name: 'King Crimson', rarity: 'Pinnacle', meta: 'Part 5 · 9 base · 4 EX' },
+  { name: 'Highway Star', rarity: 'Mythical', meta: 'Part 4 · raid namesake' },
+  { name: "Heaven's Door", rarity: 'Mythical', meta: 'Part 4 · SOUL / REALITY' },
+  { name: 'Hermit Purple', rarity: 'Evolution', meta: 'Billy quest · not an arrow roll' },
+]
+
+const homeUpdates = updates.slice(0, 6)
+
+function kitLabel(base?: number | null, ex?: number | null) {
+  if (base == null && ex == null) return null
+  const parts = []
+  if (base != null) parts.push(`${base} abilities`)
+  if (ex != null) parts.push(`${ex} EX`)
+  return parts.join(' · ')
+}
 
 export function Home() {
   return (
@@ -127,9 +212,10 @@ export function Home() {
               <span className="hero-brand-sub"> field notes</span>
             </h1>
             <p className="hero-lead">
-              Independent fan guides for the Roblox Stand battler. Browse documented
-              Stands, arrow rates, codes, raids, Hamon routes, and the dated update
-              timeline.
+              Independent fan guides for the Roblox Stand battler. Browse all{' '}
+              {standTotal} documented Stands with rarity and kit counts, published arrow
+              rates, active codes, raid routes, Hamon unlocks, and the dated launch-week
+              update timeline.
             </p>
             <div className="hero-cta">
               <Link className="btn btn-primary" to="/first-hour">
@@ -157,9 +243,15 @@ export function Home() {
                 <li key={entry.code}>
                   <code>{entry.code}</code>
                   <span>{entry.reward}</span>
+                  {entry.note ? <em className="home-codes-note">{entry.note}</em> : null}
                 </li>
               ))}
             </ul>
+            <ol className="home-codes-steps">
+              {redeemSteps.map((step) => (
+                <li key={step}>{step}</li>
+              ))}
+            </ol>
             <p className="home-codes-foot">
               Launch-night / milestone codes often need new servers. PLAYTEST is expired.
             </p>
@@ -184,11 +276,32 @@ export function Home() {
       </section>
 
       <section className="section">
+        <header className="section-head">
+          <h2>Start here</h2>
+          <p>Three checkpoints that cover most of the first session on Oʻahu.</p>
+        </header>
+        <ol className="home-start-path">
+          {startPath.map((item) => (
+            <li key={item.step}>
+              <span className="home-start-step">{item.step}</span>
+              <div>
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+                <Link className="home-codes-link" to={item.to}>
+                  {item.link}
+                </Link>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="section">
         <header className="section-head section-head-row">
           <div>
             <h2>Stand database</h2>
             <p>
-              <Link to="/stands">Tier list by rarity →</Link> {standTotal} Stands · data
+              <Link to="/stands">Full rarity pages →</Link> {standTotal} Stands · data
               checked November 15, 2026
             </p>
           </div>
@@ -201,26 +314,35 @@ export function Home() {
                 <tr>
                   <th>Rarity</th>
                   <th>Stands</th>
+                  <th>Lucky</th>
+                  <th>Bizarre</th>
                 </tr>
               </thead>
               <tbody>
-                {rarityCounts.map((row) => (
-                  <tr key={row.rarity}>
-                    <td>{row.rarity}</td>
-                    <td>{row.count}</td>
-                  </tr>
-                ))}
+                {standsByRarity.map((row) => {
+                  const rates = rateRows.find((r) => r.rarity === row.rarity)
+                  return (
+                    <tr key={row.rarity}>
+                      <td>{row.rarity}</td>
+                      <td>{row.entries.length}</td>
+                      <td>{rates?.lucky ?? '—'}</td>
+                      <td>{rates?.bizarre ?? '—'}</td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>
 
           <div className="featured-block">
-            <h3>Featured Stands</h3>
+            <h3>Featured kits</h3>
             <ul className="featured-list">
               {featured.map((stand) => (
                 <li key={stand.name}>
                   <strong>{stand.name}</strong>
-                  <span>{stand.meta}</span>
+                  <span>
+                    {stand.rarity} · {stand.meta}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -229,6 +351,122 @@ export function Home() {
             </Link>
           </div>
         </div>
+
+        <div className="home-rarity-blocks">
+          {standsByRarity.map((group) => (
+            <article key={group.rarity} className="home-rarity-block">
+              <header>
+                <h3>
+                  {group.rarity}{' '}
+                  <span>
+                    ({group.entries.length})
+                  </span>
+                </h3>
+                <p>{group.blurb}</p>
+              </header>
+              <ul>
+                {group.entries.map((stand) => (
+                  <li key={stand.name}>
+                    <strong>{stand.name}</strong>
+                    <span>
+                      {stand.part}
+                      {kitLabel(stand.base, stand.ex)
+                        ? ` · ${kitLabel(stand.base, stand.ex)}`
+                        : ''}
+                      {stand.arrows ? ` · ${stand.arrows}` : ''}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="section">
+        <header className="section-head section-head-row">
+          <div>
+            <h2>How Stands work</h2>
+            <p>
+              <Link to="/arrows">Arrow rates & pools →</Link>
+            </p>
+          </div>
+        </header>
+        <div className="home-systems-grid">
+          <article>
+            <h3>Arrow ladder</h3>
+            <p>
+              Mysterious Arrow is the base awaken / reroll. Craft Lucky from 3 Mysterious
+              (skips Rare) or Bizarre from 9 (skips Rare + Epic). Rates above are rarity
+              buckets — the game does not publish per-Stand weights.
+            </p>
+            <ul className="home-bullet-list">
+              {storyPoolBlocks.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+          </article>
+          <article>
+            <h3>Storage & removal</h3>
+            <ul className="home-bullet-list">
+              {storageNotes.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+          </article>
+          <article>
+            <h3>Off the live pool</h3>
+            <p>
+              Four kits were pulled for rework on October 29. Evolution / Quest routes
+              never come from a blind arrow.
+            </p>
+            <ul className="home-bullet-list">
+              {poolRemoved.map((row) => (
+                <li key={row.name}>
+                  <strong>{row.name}</strong> — {row.tier}. {row.note}
+                </li>
+              ))}
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section className="section">
+        <header className="section-head">
+          <h2>Systems snapshot</h2>
+          <p>The other loops that sit beside Stand rolling on launch week.</p>
+        </header>
+        <ul className="home-systems-cards">
+          {systems.map((item) => (
+            <li key={item.title}>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+              <Link className="home-codes-link" to={item.to}>
+                Open guide →
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="section">
+        <header className="section-head section-head-row">
+          <div>
+            <h2>Priority NPCs</h2>
+            <p>
+              <Link to="/npcs">Full NPC directory →</Link>
+            </p>
+          </div>
+        </header>
+        <ul className="home-npc-grid">
+          {priorityNpcs.map((npc) => (
+            <li key={npc.name}>
+              <strong>{npc.name}</strong>
+              <span className="home-npc-where">{npc.where}</span>
+              <p>{npc.role}</p>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section className="section">
@@ -258,7 +496,7 @@ export function Home() {
           <div>
             <h2>Latest updates</h2>
             <p>
-              <Link to="/updates">Full update log →</Link>
+              <Link to="/updates">Full update log →</Link> {updates.length} dated entries
             </p>
           </div>
         </header>
@@ -275,6 +513,21 @@ export function Home() {
         </ul>
       </section>
 
+      <section className="section">
+        <header className="section-head">
+          <h2>Quick FAQ</h2>
+          <p>Short answers players ask most on day one.</p>
+        </header>
+        <dl className="home-faq">
+          {homeFaq.map((item) => (
+            <div key={item.q}>
+              <dt>{item.q}</dt>
+              <dd>{item.a}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
       <section className="section home-about">
         <header className="section-head">
           <h2>About Stand Out</h2>
@@ -286,8 +539,15 @@ export function Home() {
               Stand Out is a Roblox Stand-battler that went live on November 14, 2026 at
               19:00 UTC. On its first day the Roblox games API reported 61,937 players in
               game, 2,345,790 visits and a 97.6% approval rating when sampled 2026-11-15
-              02:24 UTC. The game covers Stands, combat, quests, gang wars, items,
-              locations and other systems. Mechanics can change between patches.
+              02:24 UTC. The map is set in a Part 9–inspired Oʻahu, with Stands, combat,
+              quests, gang wars, items, locations, and sub-abilities. Specific mechanics
+              and arrow pools can change between patches — every figure on this site is
+              stamped to the snapshot dates on each page.
+            </p>
+            <p className="home-about-extra">
+              This site is an independent fan guide. It is not affiliated with the
+              developers or Roblox. Use the official experience for live economy numbers
+              when a shop price or rate disagrees with an older note.
             </p>
           </div>
           <div className="home-about-links">
@@ -295,6 +555,9 @@ export function Home() {
             <ul>
               <li>
                 <Link to="/stands">All Stands</Link>
+              </li>
+              <li>
+                <Link to="/first-hour">First-hour walkthrough</Link>
               </li>
               <li>
                 <Link to="/npcs">Quests & NPCs</Link>
@@ -310,6 +573,9 @@ export function Home() {
               </li>
               <li>
                 <Link to="/builds">Hamon & Vampire</Link>
+              </li>
+              <li>
+                <Link to="/updates">Update log</Link>
               </li>
             </ul>
           </div>
