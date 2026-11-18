@@ -6,11 +6,66 @@ export type PageSeo = {
 
 const siteName = 'stand out'
 
+export const SITE_ORIGIN = 'https://standoutgame.wiki'
+
 export function siteOrigin() {
   if (typeof window !== 'undefined' && window.location?.origin) {
     return window.location.origin
   }
-  return 'https://standoutgame.wiki'
+  return SITE_ORIGIN
+}
+
+export function absoluteUrl(path: string, origin = SITE_ORIGIN) {
+  return `${origin}${path === '/' ? '/' : path}`
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+}
+
+/** Build-time / SSR head tags so crawlers see title, canonical, og, and JSON-LD without JS. */
+export function headTagsHtml(seo: PageSeo, origin = SITE_ORIGIN) {
+  const url = absoluteUrl(seo.path, origin)
+  const keywords = 'Stand Out, Roblox, Stand Out codes, Stand Out guide, Stands, Hamon, raids'
+  const websiteLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: siteName,
+    url: origin,
+    description: defaultSeo.description,
+    inLanguage: 'en',
+  }
+  const webpageLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: seo.title,
+    description: seo.description,
+    url,
+    isPartOf: { '@type': 'WebSite', name: siteName, url: origin },
+  }
+
+  return [
+    `<title>${escapeHtml(seo.title)}</title>`,
+    `<meta name="description" content="${escapeHtml(seo.description)}" />`,
+    `<meta name="robots" content="index,follow,max-image-preview:large" />`,
+    `<meta name="keywords" content="${escapeHtml(keywords)}" />`,
+    `<meta name="author" content="${escapeHtml(siteName)}" />`,
+    `<meta property="og:type" content="website" />`,
+    `<meta property="og:site_name" content="${escapeHtml(siteName)}" />`,
+    `<meta property="og:title" content="${escapeHtml(seo.title)}" />`,
+    `<meta property="og:description" content="${escapeHtml(seo.description)}" />`,
+    `<meta property="og:url" content="${escapeHtml(url)}" />`,
+    `<meta name="twitter:card" content="summary" />`,
+    `<meta name="twitter:title" content="${escapeHtml(seo.title)}" />`,
+    `<meta name="twitter:description" content="${escapeHtml(seo.description)}" />`,
+    `<link rel="canonical" href="${escapeHtml(url)}" />`,
+    `<script type="application/ld+json" id="seo-jsonld">${JSON.stringify(websiteLd)}</script>`,
+    `<script type="application/ld+json" id="seo-webpage-jsonld">${JSON.stringify(webpageLd)}</script>`,
+  ].join('\n    ')
 }
 
 export const defaultSeo: PageSeo = {
@@ -120,7 +175,7 @@ function upsertJsonLd(id: string, data: Record<string, unknown>) {
 
 export function applySeo(seo: PageSeo) {
   const origin = siteOrigin()
-  const url = `${origin}${seo.path === '/' ? '/' : seo.path}`
+  const url = absoluteUrl(seo.path, origin)
   document.title = seo.title
   upsertMeta('name', 'description', seo.description)
   upsertMeta('name', 'robots', 'index,follow,max-image-preview:large')

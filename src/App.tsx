@@ -11,24 +11,30 @@ import { Raids } from './pages/Raids'
 import { Stands } from './pages/Stands'
 import { Updates } from './pages/Updates'
 
+export function AppRoutes() {
+  return (
+    <Routes>
+      <Route element={<Layout />}>
+        <Route index element={<Home />} />
+        <Route path="codes" element={<Codes />} />
+        <Route path="guide" element={<Guide />} />
+        <Route path="first-hour" element={<FirstHour />} />
+        <Route path="arrows" element={<Arrows />} />
+        <Route path="stands" element={<Stands />} />
+        <Route path="npcs" element={<Npcs />} />
+        <Route path="raids" element={<Raids />} />
+        <Route path="builds" element={<Builds />} />
+        <Route path="updates" element={<Updates />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Route>
+    </Routes>
+  )
+}
+
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="codes" element={<Codes />} />
-          <Route path="guide" element={<Guide />} />
-          <Route path="first-hour" element={<FirstHour />} />
-          <Route path="arrows" element={<Arrows />} />
-          <Route path="stands" element={<Stands />} />
-          <Route path="npcs" element={<Npcs />} />
-          <Route path="raids" element={<Raids />} />
-          <Route path="builds" element={<Builds />} />
-          <Route path="updates" element={<Updates />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Route>
-      </Routes>
+      <AppRoutes />
     </BrowserRouter>
   )
 }
