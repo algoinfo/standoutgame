@@ -9,6 +9,7 @@ import { Home } from './pages/Home'
 import { Npcs } from './pages/Npcs'
 import { Raids } from './pages/Raids'
 import { Stands } from './pages/Stands'
+import { TierList } from './pages/TierList'
 import { Updates } from './pages/Updates'
 
 export function AppRoutes() {
@@ -21,6 +22,7 @@ export function AppRoutes() {
         <Route path="first-hour" element={<FirstHour />} />
         <Route path="arrows" element={<Arrows />} />
         <Route path="stands" element={<Stands />} />
+        <Route path="tier-list" element={<TierList />} />
         <Route path="npcs" element={<Npcs />} />
         <Route path="raids" element={<Raids />} />
         <Route path="builds" element={<Builds />} />

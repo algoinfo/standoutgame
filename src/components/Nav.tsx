@@ -2,12 +2,13 @@ import { NavLink } from 'react-router-dom'
 
 const links = [
   { to: '/', label: 'Home', end: true },
-  { to: '/codes', label: 'Codes' },
+  { to: '/codes', label: 'Stand Out codes' },
   { to: '/guide', label: 'Guide' },
   { to: '/first-hour', label: 'First hour' },
-  { to: '/arrows', label: 'Arrows' },
-  { to: '/stands', label: 'Stands' },
-  { to: '/npcs', label: 'People' },
+  { to: '/arrows', label: 'Arrow rates' },
+  { to: '/stands', label: 'Stand rarities' },
+  { to: '/tier-list', label: 'Tier list' },
+  { to: '/npcs', label: 'NPC locations' },
   { to: '/raids', label: 'Raids' },
   { to: '/builds', label: 'Builds' },
   { to: '/updates', label: 'Updates' },

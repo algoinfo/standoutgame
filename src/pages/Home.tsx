@@ -17,14 +17,29 @@ const standsByRarity = rarityOrder.map((rarity) => ({
 
 const hubs = [
   {
-    to: '/stands',
-    title: 'Stand database',
-    blurb: `${standTotal} documented kits with rarity, Part, and ability counts`,
+    to: '/codes',
+    title: 'Stand Out codes',
+    blurb: 'Active strings, rewards, redeem path, expiry signals',
   },
   {
     to: '/stands',
-    title: 'Rarity ladder',
-    blurb: 'Seven tiers and which arrows can return each one',
+    title: 'Stand rarities',
+    blurb: `${standTotal} kits with obtain routes and keep notes`,
+  },
+  {
+    to: '/tier-list',
+    title: 'Stand Out tier list',
+    blurb: 'Rarity ladder keep bands — not an official power ranking',
+  },
+  {
+    to: '/arrows',
+    title: 'Arrow rates',
+    blurb: 'Lucky / Bizarre rates, focus arrows, pity, D’Arby',
+  },
+  {
+    to: '/npcs',
+    title: 'NPC locations',
+    blurb: 'Meryl, D’Arby, Lisa Lisa, weather-locked quests',
   },
   {
     to: '/first-hour',
@@ -32,24 +47,9 @@ const hubs = [
     blurb: 'First-hour walkthrough — tutorial, EX, bounties, Hamon',
   },
   {
-    to: '/guide',
-    title: 'Quests hub',
-    blurb: 'Story, sides, Space Oddity, bounty examples',
-  },
-  {
-    to: '/arrows',
-    title: 'Stand arrows',
-    blurb: 'Lucky / Bizarre rates, focus arrows, pity, D’Arby',
-  },
-  {
     to: '/raids',
     title: 'Raids',
     blurb: 'Train, Highway Star, 77 Rings stages and shops',
-  },
-  {
-    to: '/builds',
-    title: 'Hamon & Vampire',
-    blurb: 'Lisa Lisa checklist, Billy notes, Stone Mask, Hermit Purple',
   },
   {
     to: '/updates',
@@ -207,10 +207,8 @@ export function Home() {
         <div className="home-hero-grid">
           <div className="home-hero-copy">
             <p className="hero-kicker">Roblox · now live since November 14, 2026</p>
-            <h1 className="hero-brand">
-              stand out
-              <span className="hero-brand-sub"> field notes</span>
-            </h1>
+            <h1 className="hero-brand">Stand Out Roblox: Codes, Stands & Guides</h1>
+            <p className="hero-brand-sub">field notes</p>
             <p className="hero-lead">
               Independent fan guides for the Roblox Stand battler. Browse all{' '}
               {standTotal} documented Stands with rarity and kit counts, published arrow
@@ -554,16 +552,19 @@ export function Home() {
             <h3>Keep progressing</h3>
             <ul>
               <li>
-                <Link to="/stands">All Stands</Link>
+                <Link to="/stands">Stand rarities & roster</Link>
+              </li>
+              <li>
+                <Link to="/tier-list">Stand Out tier list</Link>
               </li>
               <li>
                 <Link to="/first-hour">First-hour walkthrough</Link>
               </li>
               <li>
-                <Link to="/npcs">Quests & NPCs</Link>
+                <Link to="/npcs">NPC locations</Link>
               </li>
               <li>
-                <Link to="/codes">Codes status</Link>
+                <Link to="/codes">Stand Out codes</Link>
               </li>
               <li>
                 <Link to="/arrows">Arrow rates</Link>

@@ -225,8 +225,8 @@ img {
 
 .hero-brand-sub {
   display: block;
-  margin-top: 0.15rem;
-  font-size: 0.42em;
+  margin: 0.35rem 0 0;
+  font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: -0.01em;
   color: var(--amber);
@@ -953,10 +953,10 @@ img {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(2.75rem, 8vw, 4.5rem);
-  line-height: 1.05;
+  font-size: clamp(1.85rem, 5.2vw, 3.25rem);
+  line-height: 1.12;
   letter-spacing: -0.02em;
-  text-transform: lowercase;
+  text-transform: none;
   animation: rise 0.9s 0.08s var(--ease) both;
 }
 

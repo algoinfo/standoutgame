@@ -11,7 +11,7 @@ export function Arrows() {
     <article className="page">
       <header className="page-hero">
         <p className="eyebrow">Systems</p>
-        <h1>Stand arrows</h1>
+        <h1>Stand Out Arrows: Rates & Pity</h1>
         <p>
           Five rollable arrows, Part focus crafts, the Part 9 rock, published Lucky/Bizarre
           rates, story-pool blocks, and D’Arby storage. Rates reflect the November 15, 2026

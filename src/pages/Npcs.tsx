@@ -5,7 +5,7 @@ export function Npcs() {
     <article className="page">
       <header className="page-hero">
         <p className="eyebrow">People & places</p>
-        <h1>Who to find</h1>
+        <h1>Stand Out NPC Locations</h1>
         <p>
           Oʻahu is crowded. These are the faces that actually change your progression —
           story, storage, raids, Hamon, and weather-gated side chains.
